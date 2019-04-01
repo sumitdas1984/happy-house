@@ -11,7 +11,6 @@ from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
 from keras.applications.imagenet_utils import preprocess_input
 import pydot
-from IPython.display import SVG
 from keras.utils.vis_utils import model_to_dot
 from keras.utils import plot_model
 from kt_utils import *
@@ -21,9 +20,8 @@ K.set_image_data_format('channels_last')
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow
 
-# %matplotlib inline
 
-
+# Preparing the training and test dataset
 X_train_orig, Y_train_orig, X_test_orig, Y_test_orig, classes = load_dataset()
 
 # Normalize image vectors
@@ -42,6 +40,7 @@ print ("X_test shape: " + str(X_test.shape))
 print ("Y_test shape: " + str(Y_test.shape))
 
 
+# defining the model
 def HappyModel(input_shape):
     """
     Implementation of the HappyModel.
@@ -53,12 +52,6 @@ def HappyModel(input_shape):
     model -- a Model() instance in Keras
     """
 
-    ### START CODE HERE ###
-    # Feel free to use the suggested outline in the text above to get started, and run through the whole
-    # exercise (including the later portions of this notebook) once. The come back also try out other
-    # network architectures as well.
-
-    # Define the input placeholder as a tensor with shape input_shape. Think of this as your input image!
     X_input = Input(input_shape)
 
     # Zero-Padding: pads the border of X_input with zeroes
@@ -84,13 +77,24 @@ def HappyModel(input_shape):
     return model
 
 
-happyModel = HappyModel((64,64,3 ))
-happyModel.compile(optimizer = "adam", loss = "binary_crossentropy", metrics= ["accuracy"])
-happyModel.fit(x = X_train, y = Y_train, epochs = 1, batch_size = 16)
+"""
+You have now built a function to describe your model. To train and test this model, there are four steps in Keras:
+1. Create the model by calling the function above
+2. Compile the model by calling model.compile(optimizer = "...", loss = "...", metrics = ["accuracy"])
+3. Train the model on train data by calling model.fit(x = ..., y = ..., epochs = ..., batch_size = ...)
+4. Test the model on test data by calling model.evaluate(x = ..., y = ...)
+"""
 
+# Create the model by calling the function above
+happyModel = HappyModel((64,64,3))
+# Compile the model by calling model.compile(optimizer = "...", loss =
+happyModel.compile(optimizer = "adam", loss = "binary_crossentropy", metrics= ["accuracy"])
+# Train the model on train data by calling model.fit(x = ..., y = ...,
+happyModel.fit(x = X_train, y = Y_train, epochs = 1, batch_size = 16)
 print("Model Summary...")
 happyModel.summary()
 
+# Test the model on test data by calling model.evaluate(x = ..., y = ...)
 preds = happyModel.evaluate(x = X_test, y = Y_test)
 print()
 print ("Loss = " + str(preds[0]))
@@ -105,4 +109,3 @@ with open("model.json", "w") as json_file:
 # serialize weights to HDF5
 happyModel.save_weights("model.h5")
 print("Saved model to disk")
-
